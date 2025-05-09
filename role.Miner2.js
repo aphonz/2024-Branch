@@ -1,22 +1,18 @@
+var sharedFuntionsCreeps = require('functions.creeps');
+
 var roleMiner = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        if (!creep.memory.home){
+            var home = creep.room.name;
+            creep.memory.home = home;
+        }
         if(!creep.memory.TargetSource){
             creep.memory.TargetSource = creep.pos.findClosestByRange(FIND_SOURCES);
         }
-        if(!creep.memory.TargetContainer){
-            Creep.say("No Container");
-        }
-        if(!creep.memory.TargetLink){
-            Creep.say("No Link")
-        }
-        //creep.memory.TargetContainer = '66c9ee5cf2048910a53ae898';
-        //creep.memory.TargetLink = '66c6f7cc6706e51064992c75';
-        var TargetContainer = creep.memory.TargetContainer;
-        var TargetLink = creep.memory.TargetLink;
         
-	    if(creep.store.getFreeCapacity() > 0) {
+	    if(creep.store.getFreeCapacity() > 11) {
 	        if(creep.ticksToLive < 30){
 	            creep.suicide();
 	        }
@@ -27,18 +23,35 @@ var roleMiner = {
             }
         }
         else {
-            var target = Game.getObjectById(TargetContainer)
-            console.log(target.store.getFreeCapacity(RESOURCE_ENERGY));
-            
-            if(target.store.getFreeCapacity(RESOURCE_ENERGY) == 0 ) {
-                creep.say("Link");
-                target = Game.getObjectById(TargetLink);
+            sharedFuntionsCreeps.findValidContainer(creep);
+            let target = Game.getObjectById(creep.memory.TargetContainer);
+
+            // If no container is assigned, find or build one
+            if (!target) {
+                // Repair structures if needed
+                let RepairStructure = creep.pos.findClosestByRange(FIND_STRUCTURES, {
+                    filter: s => {
+                        const MaxStructureLimit = 30000;
+                        const maxHits = s.hitsMax > MaxStructureLimit ? MaxStructureLimit : s.hitsMax;
+                        return s.hits + 1000 < maxHits && s.structureType !== STRUCTURE_WALL;
+                    }
+                }); 
+                if (RepairStructure && creep.repair(RepairStructure) === ERR_NOT_IN_RANGE) {
+                    creep.travelTo(RepairStructure);
+                }
+
+                // Handle construction tasks
+                let BuildTargets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+                if (BuildTargets && creep.build(BuildTargets) === OK) {
+                    creep.cancelOrder('move');
+                }
             }
-            
-            if(creep.transfer(target, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
-                creep.travelTo(target, {reusePath: 10},{visualizePathStyle: {stroke: '#ffffff'}});
+            else {
+                // Transfer energy if in range
+                if (creep.transfer(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                    creep.travelTo(target, { reusePath: 10, visualizePathStyle: { stroke: '#ffffff' } });
+                }
             }
-            
         }
 	}
 };

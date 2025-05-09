@@ -1,11 +1,19 @@
 var sharedFuntionsCreeps = require('functions.creeps');
+var functionsCondensedMain = require('CondensedMain')
 var roleUpgrader = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        
+        if (!creep.memory.home){
+            var home = creep.room.name;
+            creep.memory.home = home;
+        }
         if(!creep.memory.TargetSource){
             creep.memory.TargetSource = creep.pos.findClosestByRange(FIND_SOURCES);
+        }
+        if(!creep.memory.LinkCheck){
+            functionsCondensedMain.findLinks(creep.room.name) ;
+            creep.memory.LinkCheck = "true";
         }
 
         if(creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
@@ -30,7 +38,12 @@ var roleUpgrader = {
             if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 creep.travelTo(source, {visualizePathStyle: {stroke: '#ffaa00'}});
             }*/
-            sharedFuntionsCreeps.harvestWithStoreage(creep);
+            if (creep.memory.StorageId == "NoValue") {
+                sharedFuntionsCreeps.harvest(creep);
+            }
+            else {
+                sharedFuntionsCreeps.harvestWithStoreage(creep);
+            }
 	    }
 	}
 };

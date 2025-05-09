@@ -570,12 +570,12 @@ Traveler.creepMatrixCache = {};
 exports.Traveler = Traveler;
 // this might be higher than you wish, setting it lower is a great way to diagnose creep behavior issues. When creeps
 // need to repath to often or they aren't finding valid paths, it can sometimes point to problems elsewhere in your code
-const REPORT_CPU_THRESHOLD = 1000;
+const REPORT_CPU_THRESHOLD = 10000;
 const DEFAULT_MAXOPS = 20000;
 const DEFAULT_STUCK_VALUE = 4;
 const STATE_PREV_X = 0;
 const STATE_PREV_Y = 1;
-const STATE_STUCK = 2;
+const STATE_STUCK = 4;
 const STATE_CPU = 3;
 const STATE_DEST_X = 4;
 const STATE_DEST_Y = 5;

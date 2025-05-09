@@ -3,11 +3,12 @@ var roleExtractor = {
     /** @param {Creep} creep **/
     run: function(creep) {
         
-        /*if (!creep.memory.home){
+        if (!creep.memory.home){
             var home = creep.room.name;
             creep.memory.home = home;
         }
         // Go home
+        /*
         if (creep.room.name != creep.memory.home){
             creep.memory.role1 = creep.memory.role;
             creep.memory.role = "moveFlag"

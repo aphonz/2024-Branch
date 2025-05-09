@@ -3,6 +3,10 @@ var roleFlagMove = {
     /** @param {Creep} creep **/
     run: function(creep) {
         // Add flag Location to memory
+		if (!creep.memory.home){
+            var home = creep.room.name;
+            creep.memory.home = home;
+        }
 		if (creep.memory.home !== 'undefined' && !creep.memory.flag){
 		    creep.memory.flag = creep.memory.home
 		}

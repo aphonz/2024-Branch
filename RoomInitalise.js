@@ -17,25 +17,48 @@ var RoomInitalise = {
         if (SetupState == "2"){
             MemoryStructureRooms(Game);
         }
-        
-        
-        
+        if (SetupState == "3"){
+            MemoryTargetRoles(Game);
+        }
+        //if (SetupState == "4"){
+        //   RemoteanalyzeRoom(Game);
+        //}
+        //Rooms Memory template
+        //Units Roles
+        //Sources
+        //role assignment
+        //remote mines
         
         //Memory.Initalised = "1"
     }
 };    
+
+    // Memory Template
+    function MemoryTemplate(Game){
+        if (Memory.Template == undefined){ //check if this exists, otherwise create/update it 
+           Memory.Template = Value
+           
+        }
+        Memory.Initalised = "2"; // NEXT setp
+        SetupState = "2";
+        console.log('Template Set');
+    }
+
     
     
     // Memory Structure BASE
    function MemoryStructure(Game){
        //if (Memory.rooms == undefined){
            Memory.rooms = {} ;
+           Memory.roles = ['harvester',  'builder',  'upgrader',  'hauler',  'balancer',  'FatUpgrader', 'miner',  'miner2', 'WallRepairer' , 'AttackCreep', 'Repairer', 'remoteHarvester' , 'extractor','claim',"Reserve","RemoteRoomScout"]
+           Memory.allies = ["Jeally_Rabbit" , "insain"]
            
        //}
         Memory.Initalised = "2";
         SetupState = "2";
         console.log('Memory Set');
     }
+    
     
     // Memory Structure Rooms
    function MemoryStructureRooms(Game){
@@ -44,9 +67,49 @@ var RoomInitalise = {
                 Memory.rooms.name = {} ;
             }
         }
-        Memory.Initalised = "10";
+        Memory.Initalised = "3";
+        SetupState = "3";
         console.log('Rooms Set');
-    };
+    }
+    
+    function MemoryTargetRoles(Game){
+        // Iterate over all active rooms
+        Object.keys(Game.rooms).forEach(roomName => {
+            let room = Game.rooms[roomName]; // Get the room object
+      
+              // Initialize TargetScreep for the room if not already present
+            if (!Memory.rooms[roomName]) {
+                Memory.rooms[roomName] = {};
+            }
+            if (!Memory.rooms[roomName].TargetScreep) {
+                Memory.rooms[roomName].TargetScreep = {};
+            }
+
+                // Iterate over each role in Memory.roles (array values instead of indices)
+            Memory.roles.forEach(role => {
+                // Initialize structure for this role
+                if (!Memory.rooms[roomName].TargetScreep[role]) {
+                    Memory.rooms[roomName].TargetScreep[role] = {
+                    roleName: role, // Explicitly store the role name
+                    qty: 0,         // Placeholder for role quantity
+                    size: 1,        // Placeholder for role size
+                    Template: "WORK,CARRY,MOVE"// Placeholder for parts
+                    };
+                }
+            });
+        });
+
+        Memory.Initalised = "10";
+        SetupState = "10";
+        console.log('Role sizes Set');
+    }  ;
+    
+    
+    
+    
+
+
+    
     /*
     // Cleaner code
     Clean: function Clean(Game){

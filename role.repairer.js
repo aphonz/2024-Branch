@@ -1,12 +1,18 @@
+
 var roleBuilder = require('role.builder');
 var sharedFuntionsCreeps = require('functions.creeps');
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
         // ADD HOME
-         if (!creep.memory.home){
+        if (!creep.memory.home){
             var home = creep.room.name;
             creep.memory.home = home;
+        }
+        //GET Max Hp for ramparts 
+        if (!creep.memory.Roomlevel){
+            creep.memory.Roomlevel = creep.room.controller.level
+            creep.say(creep.room.controller.level);
         }
         // Go home
         if (creep.room.name != creep.memory.home){
@@ -49,7 +55,11 @@ module.exports = {
                     // a property called filter which can be a function
                     // we use the arrow operator to define it
                     filter: (s) => {
-                        const maxHits = s.hitsMax > 300000 ? 300000 : s.hitsMax;
+                        //Vary HP or max hitpoints 
+                        // room LVL 1 - 8 vaules are 0.25m , 0.3m , 0.42m , 0.66m, 1m , 1.6m , 2.4m , 3.76m
+                        var MaxStructureLimit = ((((creep.memory.Roomlevel*creep.memory.Roomlevel*creep.memory.Roomlevel)*6.5 )+ 248)*1000);
+                        //console.log(MaxStructureLimit);
+                        const maxHits = s.hitsMax > MaxStructureLimit ? MaxStructureLimit : s.hitsMax;
                         return s.hits < maxHits && s.structureType != STRUCTURE_WALL;
                     }
         });

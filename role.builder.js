@@ -4,6 +4,10 @@ var roleBuilder = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
+        if (!creep.memory.home){
+            var home = creep.room.name;
+            creep.memory.home = home;
+        }
         if(!creep.memory.TargetSource){
             var TTT111 =  creep.pos.findClosestByRange(FIND_SOURCES);
             creep.memory.TargetSource = TTT111.id;
@@ -34,11 +38,20 @@ var roleBuilder = {
         }*/
 
 	    if(creep.memory.building) {
-            var targets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+            var targets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
+                    filter: (structure) => {
+                        return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_CONTAINER
+                    )}});
+            if(targets == null){
+                var targets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
+            }
             //console.log(targets)
             if(targets != null){
                 if(creep.build(targets) == ERR_NOT_IN_RANGE) {
                     creep.travelTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
+                    if(creep.build(targets) == ERR_NOT_IN_RANGE){
+                        //hi
+                    }
                 }
             }
             else{

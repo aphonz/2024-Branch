@@ -1,13 +1,19 @@
+var functionsCondensedMain = require('CondensedMain');
 var roleFatUpgrader = {
 
     /** @param {Creep} creep **/
     run: function(creep) {
-        
+        if (!creep.memory.home){
+            var home = creep.room.name;
+            creep.memory.home = home;
+        }
+        const roomName = creep.memory.home;
         if(!creep.memory.TargetSource){
             creep.memory.TargetSource = creep.pos.findClosestByRange(FIND_SOURCES);
         }
         if(!creep.memory.TargetLink){
-            creep.memory.TargetLink = 'dcb36d7e7964329';
+            functionsCondensedMain.validateAndTransferEnergy(roomName);
+            creep.memory.TargetLink = Memory.rooms[roomName].controllerLink ;
         }
 
         if(creep.memory.upgrading && creep.store[RESOURCE_ENERGY] == 0) {
@@ -27,8 +33,11 @@ var roleFatUpgrader = {
         else {
 	        if(creep.ticksToLive < 50){
 	            creep.suicide();
+	            return;
 	        }
 	        var TargetLink = Game.getObjectById(creep.memory.TargetLink);
+	        
+	        functionsCondensedMain.validateAndTransferEnergy(roomName);
 	        if(creep.withdraw(TargetLink, RESOURCE_ENERGY) == ERR_NOT_IN_RANGE) {
                  creep.travelTo(TargetLink);
            }

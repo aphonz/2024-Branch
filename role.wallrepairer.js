@@ -3,6 +3,17 @@ var sharedFuntionsCreeps = require('functions.creeps');
 module.exports = {
     // a function to run the logic for this role
     run: function(creep) {
+        const rampartMaxHitsByLevel = {
+        1: 100000,
+        2: 300000,
+        3: 1000000,
+        4: 3000000,
+        5: 10000000,
+        6: 30000000,
+        7: 100000000,
+        8: 300000000
+        };
+
         if (!creep.memory.home){
             var home = creep.room.name;
             creep.memory.home = home;
@@ -16,6 +27,7 @@ module.exports = {
         if (creep.memory.working == true && creep.carry.energy == 0) {
             // switch state
             creep.memory.working = false;
+            delete creep.memory.repairTarget;
         }
         if (!creep.memory.minLevel) {
 		    creep.memory.minLevel = 3000
@@ -50,57 +62,72 @@ module.exports = {
         }
         
         // if creep is supposed to repair something
-        if (creep.memory.working == true) {
-            // find all walls in the room
-            var walls = creep.room.find(FIND_STRUCTURES, {
-                    filter: (s) => s.structureType == STRUCTURE_WALL || STRUCTURE_RAMPART
+if (creep.memory.working === true) {
+    // **Cache wall & rampart IDs every 100 ticks to reduce CPU usage**
+    if (!creep.memory.repairTargetIDs || Game.time % 100 === 0) {
+        let structures = creep.room.find(FIND_STRUCTURES, {
+            filter: (s) => s.structureType === STRUCTURE_WALL || s.structureType === STRUCTURE_RAMPART
         });
-            if (Game.time % 100 === 0) {
-                 var target = undefined;
-            }
 
-            // loop with increasing percentages
-            for (let percentage = 0.0001; percentage <= 1; percentage = percentage + 0.0001){
-                // find a wall with less than percentage hits
+        // Store only IDs instead of full game objects
+        creep.memory.repairTargetIDs = structures.map(s => s.id);
+    }
 
-                // for some reason this doesn't work
-                // target = creep.pos.findClosestByPath(walls, {
-                //     filter: (s) => s.hits / s.hitsMax < percentage
-                // });
+    // **Retrieve actual objects from IDs**
+    let structures = creep.memory.repairTargetIDs.map(id => Game.getObjectById(id)).filter(s => s);
 
-                // so we have to use this
-            //    target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-         //               filter: (s) => s.structureType == STRUCTURE_WALL &&
-         //           s.hits / s.hitsMax < percentage
-        //    });
+    // **Check if there are no walls/ramparts before proceeding**
+    if (!structures.length) return;
 
-                for (let wall of walls) {
-                    //console.log(wall.hits);
-                    //LET set Max Hits so Ramparts and Wall Both get healed evenly (set to 10,000,000 instead of 300M and 10M compared as a %)
-                    //var MaXHitsTareget = 300000 ;
-                    if (wall.hits / wall.hitsMax < percentage) {
-                    //if ((wall.hits / MaXHitsTareget) < percentage) {    
-                        target = wall;
-                        creep.say("%" + target.hits/target.hitsMax*100)
-                        break;
-                    }
-                }
+    // **Determine max HP based on room's controller level**
+    let controller = creep.room.controller;
+    let rampartMaxHits = controller ? rampartMaxHitsByLevel[controller.level] : 1000000; // Fallback default
 
-                // if there is one
-                if (target != undefined) {
-                    // break the loop
-                    break;
-                }
-            }
+    //let target = undefined;
 
-            // if we find a wall that has to be repaired
-            if (target != undefined) {
-                // try to repair it, if not in range
-                if (creep.repair(target) == ERR_NOT_IN_RANGE) {
-                    // move towards it
-                    creep.travelTo(target);
-                }
-            }
+    // **Prioritize ramparts under 300 HP immediately**
+// Track the currently targeted structure
+if (!creep.memory.repairTarget ) {
+    // Prioritize ramparts under 300 HP immediately
+
+let lowestWall = structures.reduce((lowest, s) => {
+    let maxHits = rampartMaxHits; // Walls are compared against rampart limits
+    let healthRatio = s.hits / maxHits;
+
+    return (!lowest || healthRatio < lowest.hits / maxHits) ? s : lowest;
+}, null);
+
+creep.memory.repairTarget = lowestWall ? lowestWall.id : null;
+
+}
+// Prioritize critical ramparts first
+let criticalRamparts = structures.filter(s => s.structureType === STRUCTURE_RAMPART && s.hits < 500);
+if (criticalRamparts.length > 0) {
+    creep.say("low WALL")
+     target = creep.pos.findClosestByPath(criticalRamparts);
+}
+else{
+    target = Game.getObjectById(creep.memory.repairTarget) 
+}
+
+// Log repair status periodically to reduce CPU usage
+if (target && Game.time % 10 === 0) {
+    creep.say(`${((target.hits / (target.structureType === STRUCTURE_WALL ? rampartMaxHits : target.hitsMax)) * 100).toFixed(2)}%`);
+}
+
+// Repair selected structure until out of energy
+if (target) {
+    if (creep.repair(target) === ERR_NOT_IN_RANGE && !creep.pos.inRangeTo(target, 1)) {
+        creep.moveTo(target);
+    }
+}
+
+
+
+
+
+
+
             // if we can't fine one
             else {
                 // look for construction sites
