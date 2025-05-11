@@ -81,22 +81,27 @@ var RoomInitalise = {
             if (!Memory.rooms[roomName]) {
                 Memory.rooms[roomName] = {};
             }
-            if (!Memory.rooms[roomName].TargetScreep) {
+           if (!Memory.rooms[roomName].TargetScreep) {
                 Memory.rooms[roomName].TargetScreep = {};
             }
 
+
                 // Iterate over each role in Memory.roles (array values instead of indices)
-            Memory.roles.forEach(role => {
-                // Initialize structure for this role
+          if (Array.isArray(Memory.roles)) {
+                Memory.roles.forEach(role => {
                 if (!Memory.rooms[roomName].TargetScreep[role]) {
                     Memory.rooms[roomName].TargetScreep[role] = {
-                    roleName: role, // Explicitly store the role name
-                    qty: 0,         // Placeholder for role quantity
-                    size: 1,        // Placeholder for role size
-                    Template: "WORK,CARRY,MOVE"// Placeholder for parts
-                    };
-                }
-            });
+                            roleName: role,
+                            qty: 0,
+                            size: 1,
+                            Template: [WORK, CARRY, MOVE]
+                        };
+                    }
+                });
+            } else {
+                console.log('Memory.roles is undefined or not an array');
+            }
+
         });
 
         Memory.Initalised = "10";

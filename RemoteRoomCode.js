@@ -220,22 +220,41 @@ manageSpawning: function() {
             .sort((a, b) => Memory.rooms[mainRoom].remoterooms[a].layer - Memory.rooms[mainRoom].remoterooms[b].layer)) {
 
             let remoteMemory = Memory.rooms[mainRoom].remoterooms[remoteRoom];
-            console.log(remoteRoom);
+            //console.log(remoteRoom);
 
             // **Spawn Remote Harvesters** (Max 2 per source)
             if ((remoteMemory.isOwned == Memory.username && !remoteMemory.Ignore) || 
                 (!remoteMemory.isOwned && remoteMemory.isSafe && !remoteMemory.Ignore)) {
 
-                console.log("remoteRoom");
+                //console.log("remoteRoom");
 
                 if (remoteMemory.Sources) {
                     for (let source of remoteMemory.Sources) {
                         let assignedHarvesters = _.filter(Game.creeps, creep => creep.memory.source === source.id && creep.memory.harvestRoom === remoteRoom).length;
                         let maxHarvesters = remoteMemory.isOwned === Memory.username ? 3 : 2;
+                        let assignedReserver = _.some(Game.creeps, creep => creep.memory.role === 'reserver' && creep.memory.harvestRoom === remoteRoom)
+                        //console.log(maxHarvesters);
+                        
+                        if (
+                        !assignedReserver &&
+                        spawn.room.energyCapacityAvailable > 1500 &&
+                        remoteMemory.actualHarvesters > 1 &&
+                        (!remoteMemory.ReserverValue  || remoteMemory.ReserverValue < 800)
+                        ) {
 
-                        console.log(maxHarvesters);
+                            let reserverParts = [CLAIM, CLAIM, MOVE];
+                            let creepName = `Reserver_${remoteRoom}_${Game.time}`;
+                            let result = spawn.spawnCreep(reserverParts, creepName, {
+                                memory: { role: 'reserver', harvestRoom: remoteRoom }
+                            });
 
-                        if (assignedHarvesters < maxHarvesters) {
+                            if (result === OK) {
+                            console.log(`Spawning reserver for ${remoteRoom}`);
+                                return; // **Exit the function completely**
+                            }
+                        }
+                        
+                        else if (assignedHarvesters < maxHarvesters) {
                             let bodyConfig = FunctionsSpawningCode.BuildBody(mainRoom, maxHarvesters, WorkerParts);
                             let creepName = `RemoteHarvester_${remoteRoom}_${Game.time}`;
                             let result = spawn.spawnCreep(bodyConfig, creepName, {
@@ -250,20 +269,9 @@ manageSpawning: function() {
                     }
 
                     // **Spawn Reserver** (Max 1 per room, only if energy capacity > 1500)
-                    let assignedReserver = _.some(Game.creeps, creep => creep.memory.role === 'reserver' && creep.memory.harvestRoom === remoteRoom);
+                    
 
-                    if (!assignedReserver && spawn.room.energyCapacityAvailable > 1500 && remoteMemory.actualHarvesters > 2 && remoteMemory.ReserverValue < 800) {
-                        let reserverParts = [CLAIM, CLAIM, MOVE];
-                        let creepName = `Reserver_${remoteRoom}_${Game.time}`;
-                        let result = spawn.spawnCreep(reserverParts, creepName, {
-                            memory: { role: 'reserver', harvestRoom: remoteRoom }
-                        });
-
-                        if (result === OK) {
-                            console.log(`Spawning reserver for ${remoteRoom}`);
-                            return; // **Exit the function completely**
-                        }
-                    }
+                    
                 }
             }
         }

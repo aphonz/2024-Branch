@@ -37,27 +37,68 @@ var roleBuilder = {
             }
         }*/
 
-	    if(creep.memory.building) {
-            var targets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES, {
-                    filter: (structure) => {
-                        return (structure.structureType == STRUCTURE_EXTENSION || structure.structureType == STRUCTURE_CONTAINER
-                    )}});
-            if(targets == null){
-                var targets = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
-            }
-            //console.log(targets)
-            if(targets != null){
-                if(creep.build(targets) == ERR_NOT_IN_RANGE) {
-                    creep.travelTo(targets, {visualizePathStyle: {stroke: '#ffffff'}});
-                    if(creep.build(targets) == ERR_NOT_IN_RANGE){
-                        //hi
-                    }
-                }
-            }
-            else{
-                roleUpgrader.run(creep);
+	   if (creep.memory.building) {
+    let roomMemory = Memory.rooms[creep.room.name] || {};
+    if (!roomMemory.construction) {
+        roomMemory.construction = { sites: [], lastChecked: 0 };
+    }
+
+    // Room-wide check every 100 ticks
+    if (Game.time - roomMemory.construction.lastChecked > 100) {
+        roomMemory.construction.sites = creep.room.find(FIND_CONSTRUCTION_SITES)
+            .map(site => ({ id: site.id, pos: site.pos }));
+        roomMemory.construction.lastChecked = Game.time;
+        Memory.rooms[creep.room.name] = roomMemory;
+    }
+
+    // Find the closest valid construction site
+    let validTargets = [];
+    for (let i = 0; i < roomMemory.construction.sites.length; i++) {
+        let site = Game.getObjectById(roomMemory.construction.sites[i].id);
+        if (site) {
+            validTargets.push(site);
+        }
+    }
+
+    if (validTargets.length === 0) {
+        roleUpgrader.run(creep);
+        return;
+    }
+
+    let target = creep.pos.findClosestByRange(validTargets.map(site => new RoomPosition(site.pos.x, site.pos.y, creep.room.name)));
+
+    if (!target) {
+        roleUpgrader.run(creep);
+        return;
+    }
+
+    // Find the corresponding object
+    let targetObject = null;
+    for (let i = 0; i < validTargets.length; i++) {
+        if (validTargets[i].pos.x === target.x && validTargets[i].pos.y === target.y) {
+            targetObject = validTargets[i];
+            break;
+        }
+    }
+
+    if (targetObject) {
+        if (creep.build(targetObject) === ERR_NOT_IN_RANGE) {
+            creep.travelTo(target, { visualizePathStyle: { stroke: '#ffffff' } });
+        }
+    } else {
+        // Remove completed target from memory
+        for (let i = 0; i < roomMemory.construction.sites.length; i++) {
+            if (roomMemory.construction.sites[i].id === targetObject.id) {
+                roomMemory.construction.sites.splice(i, 1);
+                break;
             }
         }
+        Memory.rooms[creep.room.name] = roomMemory;
+    }
+}
+
+
+
         
 	    
 	    else {

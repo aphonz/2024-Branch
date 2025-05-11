@@ -232,6 +232,12 @@ var functionsCondensedMain = {
 
         Memory.rooms[roomName].controllerLink = controllerLink ? controllerLink.id : null;
         Memory.rooms[roomName].storageLink = storageLink ? storageLink.id : null;
+        if ((Memory.rooms[roomName].storageLink != null ) && (Memory.rooms[roomName].controllerLink != null) ){
+            Memory.rooms[roomName].LinkUp = true ;
+        } else {
+            Memory.rooms[roomName].LinkUp = false ;
+        }
+        
     },//Function end
     
     validateAndTransferEnergy: function validateAndTransferEnergy(roomName) {
@@ -249,6 +255,11 @@ var functionsCondensedMain = {
     if (!storage) {
         delete Memory.rooms[roomName].storageLink;
     }
+    if ((Memory.rooms[roomName].storageLink != null ) && (Memory.rooms[roomName].controllerLink != null) ){
+            Memory.rooms[roomName].LinkUp = true ;
+        } else {
+            Memory.rooms[roomName].LinkUp = false ;
+        }
 
     // If both links are valid, transfer energy when controllerLink has < 200 energy
     if (controller && storage && controller.store[RESOURCE_ENERGY] < 200) {

@@ -31,7 +31,7 @@ harvestWithStoreage: function harvestWithStorage(creep){
         
     }
     if (!creep.memory.TargetSource) {
-        var TTTT111 = creep.pos.findClosestByRange(FIND_SOURCES);
+        let TTTT111 = creep.pos.findClosestByRange(FIND_SOURCES);
         creep.memory.TargetSource = TTTT111.id;
         
     }
@@ -224,23 +224,42 @@ console.log("part13")
 },
 
 
-assignSupplyContainer: function assignSupplyContainer(creep) {
-    const homeRoom = Memory.rooms[creep.memory.home];
-    if (!homeRoom || !homeRoom.sources) return;
+assignSupplyContainer: function assignSupplyContainers() {
+    let haulerGroups = {};
 
-    for (const sourceName in homeRoom.sources) {
-        const source = homeRoom.sources[sourceName];
-        const haulersAssigned = _.filter(Game.creeps, c => c.memory.SupplyContainer1 === source.containerId).length;
-        const carryNeededPerHauler = source.HaulerCarry2Needed / (homeRoom.TargetScreep.hauler.size || 1);
+    // Group haulers by their home room
+    _.forEach(Game.creeps, creep => {
+        if (creep.memory.role === "hauler" && creep.memory.home) {
+            if (!haulerGroups[creep.memory.home]) {
+                haulerGroups[creep.memory.home] = [];
+            }
 
-        if (haulersAssigned < carryNeededPerHauler) {
-            creep.memory.SupplyContainer1 = source.containerId;
-            return;
+            haulerGroups[creep.memory.home].push(creep);
         }
-    }
+    });
 
-    // If no valid assignment is found, clear the assignment.
-    creep.memory.SupplyContainer1 = null;
+    // Iterate through each room's haulers
+    _.forEach(haulerGroups, (creeps, roomName) => {
+        const homeRoom = Memory.rooms[roomName];
+        if (!homeRoom || !homeRoom.sources) return;
+
+        const totalHaulers = creeps.length;
+        const sources = Object.values(homeRoom.sources);
+        const totalNeeded = sources.reduce((sum, source) => sum + source.HaulerCarry2Needed, 0);
+
+        let assignedCounts = {};
+        sources.forEach(source => {
+            assignedCounts[source.containerId] = Math.round((source.HaulerCarry2Needed / totalNeeded) * totalHaulers);
+        });
+
+        let creepIndex = 0;
+        for (const containerId in assignedCounts) {
+            for (let i = 0; i < assignedCounts[containerId] && creepIndex < totalHaulers; i++) {
+                creeps[creepIndex].memory.SupplyContainer1 = containerId;
+                creepIndex++;
+            }
+        }
+    });
 }
 
 

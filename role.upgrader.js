@@ -9,7 +9,7 @@ var roleUpgrader = {
             creep.memory.home = home;
         }
         if(!creep.memory.TargetSource){
-            creep.memory.TargetSource = creep.pos.findClosestByRange(FIND_SOURCES);
+            creep.memory.TargetSource = (creep.pos.findClosestByRange(FIND_SOURCES).id);
         }
         if(!creep.memory.LinkCheck){
             functionsCondensedMain.findLinks(creep.room.name) ;

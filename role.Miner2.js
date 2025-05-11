@@ -9,7 +9,7 @@ var roleMiner = {
             creep.memory.home = home;
         }
         if(!creep.memory.TargetSource){
-            creep.memory.TargetSource = creep.pos.findClosestByRange(FIND_SOURCES);
+            creep.memory.TargetSource = creep.pos.findClosestByRange(FIND_SOURCES).id;
         }
         
 	    if(creep.store.getFreeCapacity() > 11) {

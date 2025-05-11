@@ -11,7 +11,7 @@ var roleHauler = {
             //creep.memory.TargetDestination = creep.room.find(STRUCTURE_STORAGE);
             //creep.memory.TargetDestination = 'f21406154f7e1cd';
             creep.memory.TargetDestination = creep.room.storage.id;
-            var TargetDestination = Game.getObjectById(creep.memory.TargetDestination);
+            //var TargetDestination = Game.getObjectById(creep.memory.TargetDestination);
         }
         if(!creep.memory.SupplyContainer1){
             sharedFuntionsCreeps.assignSupplyContainer(creep) ;

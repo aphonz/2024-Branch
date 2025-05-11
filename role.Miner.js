@@ -9,7 +9,25 @@ var roleMiner = {
             creep.memory.home = home;
         }
         if(!creep.memory.TargetSource){
-            creep.memory.TargetSource = creep.pos.findClosestByRange(FIND_SOURCES);
+           const sourcesMemory = Memory.rooms[creep.room.name] && Memory.rooms[creep.room.name].sources ? Memory.rooms[creep.room.name].sources : {};
+
+const sourceCounts = {};
+Object.keys(sourcesMemory).forEach(source => {
+    sourceCounts[source] = 0;
+});
+
+// Count assignments
+const creepsWithSameRole = _.filter(Game.creeps, c => c.memory.role === creep.memory.role && c.room.name === creep.room.name);
+creepsWithSameRole.forEach(c => {
+    if (c.memory.TargetSource) {
+        sourceCounts[c.memory.TargetSource] = (sourceCounts[c.memory.TargetSource] || 0) + 1;
+    }
+});
+
+// Assign the least-used source
+const leastUsedSource = _.min(Object.keys(sourceCounts), source => sourceCounts[source]);
+creep.memory.TargetSource = leastUsedSource;
+
         }
         
 	    if(creep.store.getFreeCapacity() > 11) {

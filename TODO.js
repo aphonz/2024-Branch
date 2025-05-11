@@ -2,9 +2,28 @@ Units have Colours?
 
 Fix wall reapirer Duplicate REF to container creep.memory.storageContainer / creep.memory.StorageId 
 
+Haulers to check if target container bellow 300 and no enemies in the room do you want to pickup reachable rubish
 
+
+
+69696.696
+
+Game.market.createOrder({
+    type: ORDER_SELL,
+    resourceType: PIXEL,
+    price: 69696.6965,
+    totalAmount: 2593
+
+});
 DONE
 Harvesters not emptying fully - done
+
+var target_creep = creep.pos.findClosestByRange(FIND_HOSTILE_CREEPS,{filter:
+function (cr)
+{
+return cr.owner.username!='Jeally_Rabbit'
+}
+});
 --------------------------------------
 //var MainRoom
 //if game.rooms.length
@@ -17,7 +36,7 @@ for(var RoomName in Memory.rooms) {
     }*/
 }
 
-
+________
 
 ---------------------------------------
 
