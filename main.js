@@ -17,6 +17,8 @@ var FunctionsSpawningCode = require('SpawningCode');
 var FunctionsRoomInitalise = require('RoomInitalise')
 var FunctionsRemoteRoomCode = require('RemoteRoomCode')
 var FunctionsRoomTargetCreepSet = require('Functions.RoomTargetCreepSet'); 
+var FunctionRoomClaiming = require('FunctionRoomClaiming'); 
+
 //import { updateRoomCreepMatrix } from 'Functions.RoomTargetCreepSet';
 
 require('prototype.spawn')();
@@ -123,6 +125,7 @@ module.exports.loop = function () {
     //Rooms LEVEL 
     if (Game.time % 500 === 0){  // 8 times a day update the rooms levels
         functionsCondensedMain.RoomsLevelMemory(Game);
+        FunctionRoomClaiming.manageRoomClaiming(Game);
     }
     
 
@@ -177,7 +180,7 @@ for (let spawnName in Game.spawns) {
 
                 const activeQty = Memory.rooms[spawn.room.name].ActiveScreeps[role] || 0;
 
-                if (activeQty < targetQty) {
+                if (activeQty <= targetQty) {
                     //console.log(spawn.room.name);
                     const newName = `${role}${Game.time}`;
                     let WorkerParts;
@@ -211,7 +214,7 @@ for (let spawnName in Game.spawns) {
             return ;
         }
         // Step 3: Tactical spawning
-        //if (FunctionsTacticalSpawning.manageSpawning(Game)) return;
+        if (FunctionRoomClaiming.spawnClaimingUnits(spawn)) return;
 
         // Step 4: Remote room spawning
         FunctionsRemoteRoomCode.manageSpawning(Game);
@@ -295,7 +298,11 @@ for (let spawnName in Game.spawns) {
         //Extra line for readability     
     }
    
-    
+   for (const roomName in Game.rooms) {
+    const room = Game.rooms[roomName];
+
+        functionsCondensedMain.findBaseLocation(room);
+    }
     
  
     

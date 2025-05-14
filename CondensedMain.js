@@ -68,7 +68,7 @@ var functionsCondensedMain = {
     
                 const role = creep.memory.role;
                 // Check if the creep has a role and sufficient ticks to live
-                if (role && creep.ticksToLive > 200) {
+                if (role ) {
                     // Increment the count for this role
                     if (!Memory.rooms[roomName].ActiveScreeps[role]) {
                         Memory.rooms[roomName].ActiveScreeps[role] = 0;
@@ -314,8 +314,107 @@ updateRoomSources: function updateRoomSources(spawn) {
         }
     });
 
-}
+},
 
+findBaseLocation: function findBaseLocation(room) {
+    if (!room) return;
+
+    // Ensure Memory structure exists
+    if (!Memory.rooms) Memory.rooms = {};
+    if (!Memory.rooms[room.name]) Memory.rooms[room.name] = {};
+    if (!Memory.roomToClaim) Memory.roomToClaim = [];
+
+    // Check if the room has already been processed
+    if (Memory.rooms[room.name].BaseChecked) {
+        return; // Skip processing if already checked
+    }
+
+    // Find all sources in the room
+    const sources = room.find(FIND_SOURCES);
+    const sourceQty = sources.length;
+
+    // If no sources exist, mark the room as incompatible and exit
+    if (sourceQty < 1) {
+        Memory.rooms[room.name].BaseChecked = true;
+        Memory.rooms[room.name].BaseCompatible = false;
+        return;
+    }
+
+    // Calculate average source position
+    let avgX = 0, avgY = 0;
+    sources.forEach(source => {
+        avgX += source.pos.x;
+        avgY += source.pos.y;
+    });
+
+    avgX /= sourceQty;
+    avgY /= sourceQty;
+
+    // Compute search start point as the midpoint between avg source position & center
+    const startX = Math.round((avgX + 25) / 2);
+    const startY = Math.round((avgY + 25) / 2);
+
+    const terrain = room.getTerrain();
+    const size = 13;
+    let basePosition = null;
+
+    // Flood-Fill Search Setup
+    let queue = [[startX, startY]];
+    let visited = new Set();
+
+    while (queue.length > 0) {
+        let [x, y] = queue.shift();
+        let key = `${x},${y}`;
+
+        // Skip if already visited
+        if (visited.has(key)) continue;
+        visited.add(key);
+
+        // Ensure coordinates are within room bounds
+        if (x < 0 || x >= 50 || y < 0 || y >= 50) continue;
+
+        let isValid = true;
+
+        // Check for 13x13 empty space, allowing plains (0) and swamp (2)
+        for (let offsetX = 0; offsetX < size; offsetX++) {
+            for (let offsetY = 0; offsetY < size; offsetY++) {
+                const terrainType = terrain.get(x + offsetX, y + offsetY);
+                if (terrainType !== 0 && terrainType !== 2) { // Allow plains & swamps
+                    isValid = false;
+                    break;
+                }
+            }
+            if (!isValid) break;
+        }
+
+        if (isValid) {
+            basePosition = new RoomPosition(x + Math.floor(size / 2), y + Math.floor(size / 2), room.name);
+            break;
+        }
+
+        // Add neighboring positions to queue (up, down, left, right)
+        queue.push([x + 1, y], [x - 1, y], [x, y + 1], [x, y - 1]);
+    }
+
+    // Store whether the room has been checked
+    Memory.rooms[room.name].BaseChecked = true;
+    Memory.rooms[room.name].SourceQty = sourceQty;
+
+    if (basePosition) {
+        // Store the position in memory
+        Memory.rooms[room.name].BaseCompatible = basePosition;
+
+        // Add the room name to the list of rooms to claim
+        if (!Memory.roomToClaim.includes(room.name)) {
+            Memory.roomToClaim.push(room.name);
+        }
+
+        // Place a flag at the center of the base area
+        room.createFlag(basePosition.x, basePosition.y, `C.${room.name}`);
+    } else {
+        Memory.rooms[room.name].BaseCompatible = false; // No valid location found
+    }
+}
 
     
 };

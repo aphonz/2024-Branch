@@ -38,75 +38,75 @@ var FunctionsRoomTargetCreepSet = {
         miner        : { qty: 2, size: 1, template: [WORK, WORK, WORK, CARRY, MOVE] },
         
         WallRepairer : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
-        Repairer     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] }
+        Repairer     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] }
     },
     3: { //  800points - 5 Containers, 1 Spawn, 10 Extensions (50 capacity), Ramparts (1M max hits), Walls, 1 Tower
         harvester    : { qty: 2, size: 3, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
-        upgrader     : { qty: 3, size: 3, template: [WORK, CARRY, MOVE] },
+        upgrader     : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
         hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 0, size: 2, template: [CARRY, CARRY, MOVE] },
         FatUpgrader  : { qty: 0, size: 0, template: [WORK, CARRY, MOVE] }, // dont build unltill links 
         miner        : { qty: 2, size: 1, template: [WORK, WORK, WORK, CARRY, MOVE] },
         
         WallRepairer : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
-        Repairer     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] }
+        Repairer     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] }
     },
     4: { // 1,300 points storage  5 Containers, 1 Spawn, 20 Extensions (50 capacity), Ramparts (3M max hits), Walls, 1 Tower, Storage
         harvester    : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
-        builder      : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        upgrader     : { qty: 2, size: 4, template: [WORK, CARRY, MOVE] },
+        builder      : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
+        upgrader     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 2, size: 2, template: [CARRY, CARRY, MOVE] },
         FatUpgrader  : { qty: 0, size: 0, template: [WORK, CARRY, MOVE] }, // dont build unltill links 
         miner        : { qty: 2, size: 1, template: [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE] },
         
         WallRepairer : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
-        Repairer     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] }
+        Repairer     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] }
     },
     5: { // 1,800 Points links  5 Containers, 1 Spawn, 30 Extensions (50 capacity), Ramparts (10M max hits), Walls, 2 Towers, Storage, 2 Links
         harvester    : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        upgrader     : { qty: 2, size: 4, template: [WORK, CARRY, MOVE] },
+        upgrader     : { qty: 2, size: 3, template: [WORK, CARRY, MOVE] },
         hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 3, size: 3, template: [CARRY, CARRY, MOVE] },
-        FatUpgrader  : { qty: 2, size: 4, template: [WORK,WORK,WORK,CARRY,MOVE] }, // dont build unltill links 
+        FatUpgrader  : { qty: 1, size: 2, template: [WORK,WORK,WORK,CARRY,MOVE] }, // dont build unltill links 
         miner        : { qty: 2, size: 1, template: [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE] },
         
-        WallRepairer : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        Repairer     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] }
+        WallRepairer : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
+        Repairer     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] }
     },
     6: { // 2,300 POints Terminal 5 Containers, 1 Spawn, 40 Extensions (50 capacity), Ramparts (30M max hits), Walls, 2 Towers, Storage, 3 Links, Extractor, 3 Labs, Terminal
         harvester    : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        upgrader     : { qty: 2, size: 4, template: [WORK, CARRY, MOVE] },
+        upgrader     : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
         hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 3, size: 3, template: [CARRY, CARRY, MOVE] },
-        FatUpgrader  : { qty: 2, size: 4, template: [WORK,WORK,WORK,CARRY,MOVE] }, // dont build unltill links 
+        FatUpgrader  : { qty: 1, size: 2, template: [WORK,WORK,WORK,CARRY,MOVE] }, // dont build unltill links 
         miner        : { qty: 2, size: 1, template: [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE] },
         
-        WallRepairer : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        Repairer     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] }
+        WallRepairer : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
+        Repairer     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] }
     },
     7: { //5,300 Points  2nd spawn  5 Containers, 2 Spawns, 50 Extensions (100 capacity), Ramparts (100M max hits), Walls, 3 Towers, Storage, 4 Links, Extractor, 6 Labs, Terminal, Factory
         harvester    : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        upgrader     : { qty: 2, size: 4, template: [WORK, CARRY, MOVE] },
+        upgrader     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] },
         hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 3, size: 3, template: [CARRY, CARRY, MOVE] },
-        FatUpgrader  : { qty: 1, size: 4, template: [WORK,WORK,WORK,CARRY,MOVE] }, // dont build unltill links 
+        FatUpgrader  : { qty: 1, size: 3, template: [WORK,WORK,WORK,CARRY,MOVE] }, // dont build unltill links 
         miner        : { qty: 2, size: 1, template: [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE] },
         
-        WallRepairer : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        Repairer     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] }
+        WallRepairer : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
+        Repairer     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] }
     },
     8: { //12,300 Points  3rd spawn nuke   5 Containers, 3 Spawns, 60 Extensions (200 capacity), Ramparts (300M max hits), Walls, 6 Towers, Storage, 6 Links, Extractor, 10 Labs, Terminal, Factory, Observer, Power Spawn, Nuker
         harvester    : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        upgrader     : { qty: 2, size: 4, template: [WORK, CARRY, MOVE] },
+        upgrader     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] },
         hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 3, size: 3, template: [CARRY, CARRY, MOVE] },
-        FatUpgrader  : { qty: 1, size: 4, template: [WORK,WORK,WORK,CARRY,MOVE] }, // dont build unltill links 
+        FatUpgrader  : { qty: 1, size: 1, template: [WORK,CARRY,MOVE] }, // dont build unltill links 
         miner        : { qty: 2, size: 1, template: [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE] },
         
         WallRepairer : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },

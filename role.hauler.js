@@ -13,7 +13,7 @@ var roleHauler = {
             creep.memory.TargetDestination = creep.room.storage.id;
             //var TargetDestination = Game.getObjectById(creep.memory.TargetDestination);
         }
-        if(!creep.memory.SupplyContainer1){
+        if(!creep.memory.SupplyContainer1 || creep.ticksToLive === 1000){
             sharedFuntionsCreeps.assignSupplyContainer(creep) ;
         }
         

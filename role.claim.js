@@ -20,13 +20,14 @@ var roleClaim = {
             if (!pos1.isEqualTo(pos2)) {
                 creep.moveTo(flag.pos);
             }
+            return;
         }
         else {
             
             
             
             
-    
+    /*
             if(creep.room.controller && !creep.room.controller.my) {
                 if(creep.attackController(creep.room.controller) == ERR_NOT_IN_RANGE) {
                     creep.moveTo(creep.room.controller);
@@ -35,7 +36,7 @@ var roleClaim = {
                     }
                 }
             }
-            else if(creep.room.controller){
+            else */if(creep.room.controller){
                 if(creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE){
                     creep.moveTo(creep.room.controller);
                     if(creep.claimController(creep.room.controller) == ERR_NOT_IN_RANGE){

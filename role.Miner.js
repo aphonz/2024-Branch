@@ -8,6 +8,21 @@ var roleMiner = {
             var home = creep.room.name;
             creep.memory.home = home;
         }
+        else if (creep.room.name != creep.memory.home){
+            creep.memory.flag = creep.memory.home;
+        }
+        
+        if (creep.room.name != creep.memory.home){
+            creep.memory.flag = creep.memory.home;
+            var flag = Game.flags[creep.memory.flag];
+            // travel to flag
+            var pos1 = creep.pos
+            var pos2 = flag.pos
+            if (!pos1.isEqualTo(pos2)) {
+                creep.moveTo(flag.pos);
+            }
+            return;
+        }
         if(!creep.memory.TargetSource){
            const sourcesMemory = Memory.rooms[creep.room.name] && Memory.rooms[creep.room.name].sources ? Memory.rooms[creep.room.name].sources : {};
 
