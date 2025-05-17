@@ -10,7 +10,27 @@ var roleHauler = {
         if(!creep.memory.TargetDestination){
             //creep.memory.TargetDestination = creep.room.find(STRUCTURE_STORAGE);
             //creep.memory.TargetDestination = 'f21406154f7e1cd';
-            creep.memory.TargetDestination = creep.room.storage.id;
+            if (!creep.room.storage) {
+    if (!creep.memory.idlePosition) {
+        // Set an idle position only once, avoiding unnecessary path recalculations
+        let spawn = creep.room.find(FIND_MY_SPAWNS)[0];
+        if (spawn) {
+            creep.memory.idlePosition = { x: spawn.pos.x, y: spawn.pos.y + 3 }; // Slightly away from the spawn
+        }
+    }
+
+    let idlePos = creep.memory.idlePosition;
+    if (idlePos) {
+        creep.moveTo(new RoomPosition(idlePos.x, idlePos.y, creep.room.name), { reusePath: 50 });
+        return;
+    }
+    
+    creep.say('Waiting...');
+} else {
+    creep.memory.TargetDestination = creep.room.storage.id;
+    delete creep.memory.idlePosition; // Cleanup once storage exists
+}
+
             //var TargetDestination = Game.getObjectById(creep.memory.TargetDestination);
         }
         if(!creep.memory.SupplyContainer1 || creep.ticksToLive === 1000){

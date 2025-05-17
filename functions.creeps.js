@@ -7,14 +7,41 @@ harvest: function harvest(creep) {
     if (creep.ticksToLive < 70) {
         creep.suicide()
     }
-    var source = Game.getObjectById(creep.memory.TargetSource);
+    var source = Game.getObjectById(creep.memory.TargetSource)
+    if (Memory.rooms[roomName] && Memory.rooms[roomName].sources) {
+    // Retrieve all containers linked to sources in the room
+    const sourceContainers = Object.values(Memory.rooms[roomName].sources)
+        .map(source => Game.getObjectById(source.containerId))
+        .filter(container => container && container.store.energy > 600);
+
+    // If there are valid containers, find the closest one
+    if (sourceContainers.length >= 1) {
+        const closestContainer = creep.pos.findClosestByRange(sourceContainers);
+        creep.memory.cachedSource = closestContainer; // Cache container
+
+        if (creep.withdraw(closestContainer, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+            creep.travelTo(closestContainer);
+        }
+    } else {
+        // Fall back to harvesting from the source
+        if (creep.harvest(source) === ERR_NOT_IN_RANGE || creep.harvest(source) === ERR_NOT_ENOUGH_RESOURCES) {
+            creep.travelTo(source);
+        }
+    }
+}
+
+// Clear cache once energy is withdrawn
+if (creep.memory.cachedSource && creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
+    delete creep.memory.cachedSource;
+}
+    /*var source = Game.getObjectById(creep.memory.TargetSource);
     //console.log(source)
     if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
         creep.travelTo(source);
         if(creep.harvest(source) == ERR_NOT_IN_RANGE) {
             //try again
         }
-    }
+    }*/
 },
 // Core Harvest code with storage 
 harvestWithStoreage: function harvestWithStorage(creep){
@@ -39,10 +66,27 @@ harvestWithStoreage: function harvestWithStorage(creep){
         creep.memory.minLevel = 30000 ;//100k Min storage by default 
     }
     //Harvest
-    var source = Game.getObjectById(creep.memory.TargetSource);
-    if (source.Energy = 0){
-       // source = (creep.pos.findClosestByRange(FIND_SOURCES,filter: (structure) => {structure.energy > 0})).id;
+var source = null; // Ensure 'source' is always declared
+
+if (creep.memory.TargetSource) {
+    source = Game.getObjectById(creep.memory.TargetSource);
+} else {
+    var sources = creep.room.find(FIND_SOURCES);
+    if (sources.length > 0) {
+        var index = Game.time % sources.length; // Dynamically selects a source
+        source = sources[index];
+        creep.memory.TargetSource = source.id; // Store it for future use
     }
+}
+
+if (source) {
+    // Proceed with actions, like moving to or harvesting
+    creep.moveTo(source);
+}
+
+
+
+
     var minLevel = (creep.memory.minLevel);
     //creep.say(creep.room.storage.store[RESOURCE_ENERGY]);
     if (creep.memory.StorageId == "NoValue") {
@@ -68,7 +112,45 @@ harvestWithStoreage: function harvestWithStorage(creep){
             if (creep.harvest(source) == ERR_NOT_IN_RANGE) {
                 //try again
             }
+        }/*
+       // Ensure room and sources exist in memory
+if (Memory.rooms[roomName] && Memory.rooms[roomName].sources) {
+    // Retrieve all containers linked to sources in the room
+    const sourceContainers = Object.values(Memory.rooms[roomName].sources)
+        .map(source => Game.getObjectById(source.containerId))
+        .filter(container => container && container.store.energy > 600);
+
+    let target = null;
+
+    if (sourceContainers.length > 0) {
+        // Select the closest available container
+        target = creep.pos.findClosestByRange(sourceContainers);
+
+        if (target) {
+            creep.memory.cachedSource = target.id; // Cache container
+
+            if (creep.withdraw(target, RESOURCE_ENERGY) === ERR_NOT_IN_RANGE) {
+                creep.travelTo(target);
+            }
         }
+    }
+
+
+
+    // Final fallback: Harvest directly from the source if no containers are available
+    if (!target) {
+        if (creep.harvest(source) === ERR_NOT_IN_RANGE || creep.harvest(source) === ERR_NOT_ENOUGH_RESOURCES) {
+            creep.travelTo(source);
+        }
+    }
+}
+
+// Clear cache once energy is withdrawn
+if (creep.memory.cachedSource && creep.store.getUsedCapacity(RESOURCE_ENERGY) === 0) {
+    delete creep.memory.cachedSource;
+}*/
+
+
     }
     
     else if(creep.room.storage.store[RESOURCE_ENERGY] < minLevel) {

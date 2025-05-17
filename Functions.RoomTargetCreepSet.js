@@ -7,7 +7,7 @@ var FunctionsRoomTargetCreepSet = {
     0: { // Pre-RCL rooms 5 Containers
         harvester    : { qty: 2, size: 1, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 1, size: 0, template: [WORK, CARRY, MOVE] },
-        upgrader     : { qty: 8, size: 0, template: [WORK, CARRY, MOVE] },
+        upgrader     : { qty: 4, size: 0, template: [WORK, CARRY, MOVE] },
         hauler       : { qty: 0, size: 0, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 0, size: 0, template: [CARRY, CARRY, MOVE] },
         FatUpgrader  : { qty: 0, size: 0, template: [WORK, CARRY, MOVE] },
@@ -20,7 +20,7 @@ var FunctionsRoomTargetCreepSet = {
         harvester    : { qty: 2, size: 2, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 0, size: 0, template: [WORK, CARRY, MOVE] },
         upgrader     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
-        hauler       : { qty: 1, size: 1, template: [CARRY, CARRY, MOVE] },
+        hauler       : { qty: 0, size: 1, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 0, size: 0, template: [CARRY, CARRY, MOVE] },
         FatUpgrader  : { qty: 0, size: 0, template: [WORK, CARRY, MOVE] },
         miner        : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
@@ -31,11 +31,11 @@ var FunctionsRoomTargetCreepSet = {
     2: { // 550 points - 5 Containers, 1 Spawn, 5 Extensions (50 capacity), Ramparts (300K max hits), Walls
         harvester    : { qty: 2, size: 3, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
-        upgrader     : { qty: 4, size: 2, template: [WORK, CARRY, MOVE] },
-        hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
-        balancer     : { qty: 1, size: 2, template: [CARRY, CARRY, MOVE] },
+        upgrader     : { qty: 2, size: 2, template: [WORK, CARRY, MOVE] },
+        hauler       : { qty: 0, size: 1, template: [CARRY, CARRY, MOVE] },
+        balancer     : { qty: 0, size: 2, template: [CARRY, CARRY, MOVE] },
         FatUpgrader  : { qty: 0, size: 0, template: [WORK, CARRY, MOVE] }, // dont build unltill links 
-        miner        : { qty: 2, size: 1, template: [WORK, WORK, WORK, CARRY, MOVE] },
+        miner        : { qty: 1, size: 1, template: [WORK, WORK, WORK, CARRY, MOVE] },
         
         WallRepairer : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         Repairer     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] }
@@ -44,10 +44,10 @@ var FunctionsRoomTargetCreepSet = {
         harvester    : { qty: 2, size: 3, template: [WORK, CARRY, MOVE] },
         builder      : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         upgrader     : { qty: 1, size: 3, template: [WORK, CARRY, MOVE] },
-        hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
+        hauler       : { qty: 0, size: 1, template: [CARRY, CARRY, MOVE] },
         balancer     : { qty: 0, size: 2, template: [CARRY, CARRY, MOVE] },
         FatUpgrader  : { qty: 0, size: 0, template: [WORK, CARRY, MOVE] }, // dont build unltill links 
-        miner        : { qty: 2, size: 1, template: [WORK, WORK, WORK, CARRY, MOVE] },
+        miner        : { qty: 2, size: 2, template: [WORK, WORK, WORK, CARRY, MOVE] },
         
         WallRepairer : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         Repairer     : { qty: 1, size: 1, template: [WORK, CARRY, MOVE] }
@@ -57,7 +57,7 @@ var FunctionsRoomTargetCreepSet = {
         builder      : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         upgrader     : { qty: 1, size: 2, template: [WORK, CARRY, MOVE] },
         hauler       : { qty: 2, size: 1, template: [CARRY, CARRY, MOVE] },
-        balancer     : { qty: 2, size: 2, template: [CARRY, CARRY, MOVE] },
+        balancer     : { qty: 1, size: 2, template: [CARRY, CARRY, MOVE] },
         FatUpgrader  : { qty: 0, size: 0, template: [WORK, CARRY, MOVE] }, // dont build unltill links 
         miner        : { qty: 2, size: 1, template: [WORK,WORK,WORK,WORK,WORK,WORK,CARRY,CARRY,MOVE,MOVE] },
         
@@ -214,7 +214,9 @@ updateRoomCreepMatrix: function updateRoomCreepMatrix() {
 calculateHaulerAssignment: function calculateHaulerAssignment(room) {
     // Ensure the room memory exists and contains sources
     if (!Memory.rooms[room.name] || !Memory.rooms[room.name].sources) return { qty: 0, size: 1 };
-
+    if (Memory.rooms[room.name].RoomLevel <= 3){
+        return 0;
+    }
     let totalCarryNeeded = 0;
     let smallestSize = Infinity;
 

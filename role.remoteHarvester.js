@@ -45,6 +45,7 @@ var roleRemoteHarvester = {
         // harvest or deliver
         if(creep.carry.energy == 0) {
             creep.memory.harvesting = false;
+            creep.memory.skiptobuild = false;
             creep.memory.targetRoom = creep.memory.harvestRoom;
         }
         if(!creep.memory.harvesting && creep.carry.energy== creep.carryCapacity) {
@@ -110,11 +111,15 @@ if (repairTarget) {
        
         
         else if (creep.memory.harvesting === true) {
+            
             if (creep.memory.storageContainer == "undefined") {
                 roomName = creep.room.name;
             // Check if storageLink exists once
             const storageLink = Memory.rooms[roomName].storageLink;
-    
+            if (creep.memory.skiptobuild === true ){ // stops remotes all stopping building if at one point all the containers was full this harvest cycle
+                roleBuilder.run(creep)
+                return;
+            }
             // If targets are not cached or cache is outdated (older than 100 ticks), refresh them
             if (!Memory.rooms[roomName].BalancercachedTargets || Memory.rooms[roomName].BalancercachedTargets.tick + 100 < Game.time) {
                 let targets = Game.rooms[roomName].find(FIND_STRUCTURES, {
@@ -149,7 +154,9 @@ if (repairTarget) {
                         }
                     }
                     else{
-                    roleBuilder.run(creep);
+                    creep.memory.skiptobuild = true ;
+                    //roleBuilder.run(creep);
+                    return
                 }
 
             }

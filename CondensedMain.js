@@ -388,7 +388,11 @@ findBaseLocation: function findBaseLocation(room) {
         }
 
         if (isValid) {
-            basePosition = new RoomPosition(x + Math.floor(size / 2), y + Math.floor(size / 2), room.name);
+            basePosition = new RoomPosition(
+                Math.min(Math.max(x + Math.floor(size / 2), 0), 49),
+                Math.min(Math.max(y + Math.floor(size / 2), 0), 49),
+                room.name
+            );
             break;
         }
 

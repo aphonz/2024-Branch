@@ -1,3 +1,5 @@
+
+
 var sharedFuntionsCreeps = require('functions.creeps');
 var functionsCondensedMain = require('CondensedMain')
 var roleUpgrader = {

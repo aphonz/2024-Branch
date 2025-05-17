@@ -18,6 +18,7 @@ var FunctionsRoomInitalise = require('RoomInitalise')
 var FunctionsRemoteRoomCode = require('RemoteRoomCode')
 var FunctionsRoomTargetCreepSet = require('Functions.RoomTargetCreepSet'); 
 var FunctionRoomClaiming = require('FunctionRoomClaiming'); 
+var RoomBunkerBulderFunction = require('RoomBunkerBulderFunction'); 
 
 //import { updateRoomCreepMatrix } from 'Functions.RoomTargetCreepSet';
 
@@ -176,11 +177,11 @@ for (let spawnName in Game.spawns) {
             if (Memory.rooms[spawn.room.name].TargetScreep[role]) { 
                 //console.log(role);
                 const targetQty = Memory.rooms[spawn.room.name].TargetScreep[role].qty || 0;
-                if (targetQty === 0) continue; // Skip roles that don’t require spawning
+                if (targetQty > 1) continue; // Skip roles that don’t require spawning
 
-                const activeQty = Memory.rooms[spawn.room.name].ActiveScreeps[role] || 0;
+                const activeQty = Memory.rooms[spawn.room.name].ActiveScreeps[role] || 0;// if no value treat it as 99 units exist
 
-                if (activeQty <= targetQty) {
+                if (activeQty < targetQty) {
                     //console.log(spawn.room.name);
                     const newName = `${role}${Game.time}`;
                     let WorkerParts;
@@ -304,6 +305,7 @@ for (let spawnName in Game.spawns) {
         functionsCondensedMain.findBaseLocation(room);
     }
     
+    RoomBunkerBulderFunction.buildBunker("W15N1")
  
     
     if (StatsEnabled == true){
